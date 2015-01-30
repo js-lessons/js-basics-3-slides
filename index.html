@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>JavaScript basics (Functions)</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h2>Объекты и массивы</h2>
+				</section>
+
+				<section>
+					<h3>Массив</h3>
+					<pre><code>
+                _________________________________________
+               |     |     |     |     |     |     |     |
+               |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
+               |_____|_____|_____|_____|_____|_____|_____|
+					</code></pre>
+          <p class="fragment current-visible visible">Непрерывный участок памяти для хранения элементов одного типа данных, доступ к которым возможен с помощью индексов.</p>
+          <p class="fragment strike current-visible">Непрерывный участок памяти для хранения элементов одного типа данных, доступ к которым возможен с помощью индексов.</p>
+				</section>
+
+
+        <section>
+          <h3>Массив в JavaScript</h3>
+          <ul>
+            <li>
+              Объект похожий на список с некоторыми методами и свойствами
+            </li>
+            <li>
+              Ни размер, ни тип не фиксированы
+              <pre><code data-trim>
+var emptyArray = [];
+var stuff = [1, null, { well: 'hey there' }, [1, 2, 3]];
+
+var a1 = new Array();                // a1.toString() -> ''
+var a2 = new Array(3);               // a2.toString() -> ',,'
+var a3 = new Array(1, 2, 3);         // a3.toString() -> '1,2,3'
+              </code></pre>
+            </li>
+            <li>Длина массива не является верхней границей</li>
+          </ul>
+        </section>
+
+				<section>
+					<h3>Область видимости функции</h3>
+					<pre><code data-trim>
+var x = 'global';
+
+var f = function() { var x = 'inside f'; }
+var g = function(x) {}
+
+f();
+g('inside g');
+console.log(x);                               // 'global'
+
+var h = function() {
+  x = 'inside h';
+}
+
+h();
+console.log(x)                                // 'inside h'
+					</code></pre>
+        </section>
+
+        <section>
+          <h3>Variable hoisting</h3>
+
+					<pre><code data-trim>
+var x = 42;
+
+var f = function() {
+  if (x === 42) {
+    console.log(x);
+  } else {
+    var x = 50;
+    console.log(x);
+  }
+}
+
+f();
+					</code></pre>
+        </section>
+
+        <section>
+          <h3>Вложенные области видимости</h3>
+					<pre><code data-trim>
+var factorial = function(n) {
+  var factorialIter = function(i, acc) {
+    var result;
+    if (i < 2) {
+      result = acc;
+    } else {
+      result = factorialIter(i - 1, acc * i);
+    }
+    return result;
+  }
+
+  return factorialIter(n, 1);
+}
+
+factorial(4)                                  // 24
+factorialIter(6, 1);                          // error
+					</code></pre>
+        </section>
+
+				<section>
+          <h3>Блочная vs Функциональная области видимости</h3>
+          <p>В текущей версии присутствует только функциональная область видимости</p>
+					<pre><code data-trim>
+function f(a) {
+  if (a < 0) {
+    var i = 3;
+  }
+
+  console.log(i);                             // 3
+}
+
+f(-1);
+					</code></pre>
+				</section>
+
+				<section>
+          <h3>Behold the future (ECMAScript 6)</h3>
+					<pre><code data-trim>
+function f(a) {
+   if (a < 0) {
+      let i = 3;
+   }
+
+   console.log(i);           // ReferenceError: i is not defined
+}
+
+f(-1);
+					</code></pre>
+				</section>
+
+				<section>
+          <h3>Объявление функций</h3>
+					<pre><code data-trim>
+console.log('3 в квадрате: ', square(3));
+
+function square(x) {
+  return x * x;
+}
+
+function example() {
+  function a() {}                             // OK
+  if (something) {
+    function b() {}                           // bad
+  }
+}
+					</code></pre>
+				</section>
+
+				<section>
+          <h3>Стек вызовов</h3>
+					<pre><code data-trim>
+function hello(name) {
+  console.log("Hello " + name);
+}
+hello("Ivan");
+console.log("Good bye");
+					</code></pre>
+
+					<pre><code data-trim>
+top
+   hello
+        console.log
+   hello
+top
+   console.log
+top
+					</code></pre>
+				</section>
+
+				<section>
+          <h3>Переполнение стека</h3>
+					<pre><code data-trim>
+function chicken() {
+  return egg();
+}
+function egg() {
+  return chicken();
+}
+console.log(chicken() + " came first.");      // Stack overflow
+					</code></pre>
+				</section>
+
+				<section>
+          <h3>Необязательные аргументы</h3>
+					<pre><code data-trim>
+function log(text, level) {
+  if (level == undefined)
+    level = 'debug';
+
+  console.log(level + ': ', text);
+}
+
+log('called with date');              // debug: called with date
+log('called with string', 'error');   // error: called with string
+log('called with numeric', 'info');   // info: called with numeric
+					</code></pre>
+				</section>
+
+				<section>
+          <h3>Замыкания</h3>
+					<pre><code data-trim>
+var value = 1;
+
+function showValue() {
+  console.log(value);
+}
+
+value = 2;
+
+showThis();                                   // 2
+					</code></pre>
+
+					<pre><code data-trim>
+function wrapValue(n) {
+  var localVariable = n;
+  return function() { return localVariable; };
+}
+
+var wrap1 = wrapValue(1);
+var wrap2 = wrapValue(2);
+
+console.log(wrap1());                         // 1
+console.log(wrap2());                         // 2
+					</code></pre>
+				</section>
+
+				<section>
+          <h3>Еще пример</h3>
+					<pre><code data-trim>
+function multiplier(factor) {
+  return function(number) {
+    return number * factor;
+  };
+}
+
+var twice = multiplier(2);
+console.log(twice(5));                        // 10
+					</code></pre>
+				</section>
+
+				<section>
+          <h3>И еще</h3>
+					<pre><code data-trim>
+var helper = {
+  loadUser: function() { ... },
+  init: function() {
+    var _this = this;
+
+    $('.user').on('click', function() {
+      _this.loadUser();
+    }):
+  }
+}
+
+helper.init();
+					</code></pre>
+				</section>
+
+				<section>
+          <h3>Рекурсия</h3>
+					<pre><code data-trim>
+function factorial(n) {
+  if (n < 2) {
+    return 1;
+  } else {
+    return n * factorial(n - 1);
+  }
+}
+
+factorial(4);                                 // 24
+					</code></pre>
+				</section>
+
+        <section>
+					<pre><code data-trim>
+function findSolution(target) {
+  function find(start, history) {
+    if (start == target)
+      return history;
+    else if (start > target)
+      return null;
+    else
+      return find(start + 5, "(" + history + " + 5)") ||
+             find(start * 3, "(" + history + " * 3)");
+  }
+  return find(1, "1");
+}
+
+console.log(findSolution(24));
+					</code></pre>
+
+					<pre><code>
+                             "1"(1)
+
+             "1+5"(6)                    "1*3"(3)
+
+ "(1+5)+5"(11)   "(1+5)*3"(21)  "(1*3)+5"(8)  "(1*3)*3"(9)
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>Стек вызовов для числа 13</h3>
+					<pre><code data-trim>
+find(1, "1")
+  find(6, "(1 + 5)")
+    find(11, "((1 + 5) + 5)")
+      find(16, "(((1 + 5) + 5) + 5)")
+        too big
+      find(33, "(((1 + 5) + 5) * 3)")
+        too big
+    find(18, "((1 + 5) * 3)")
+      too big
+  find(3, "(1 * 3)")
+    find(8, "((1 * 3) + 5)")
+      find(13, "(((1 * 3) + 5) + 5)")
+        found!
+					</code></pre>
+        </section>
+
+        <section>
+          <h3>Ссылки</h3>
+          <a href="http://eloquentjavascript.net/03_functions.html">http://eloquentjavascript.net/03_functions.html</a>
+          <a href="https://leanpub.com/javascript-allonge/read#functions">https://leanpub.com/javascript-allonge/read#functions</a>
+        </section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
