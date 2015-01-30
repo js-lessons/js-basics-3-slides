@@ -47,10 +47,10 @@
 				<section>
 					<h3>Массив</h3>
 					<pre><code>
-                _________________________________________
-               |     |     |     |     |     |     |     |
-               |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
-               |_____|_____|_____|_____|_____|_____|_____|
+              _________________________________________
+             |     |     |     |     |     |     |     |
+             |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
+             |_____|_____|_____|_____|_____|_____|_____|
 					</code></pre>
           <p class="fragment current-visible visible">Непрерывный участок памяти для хранения элементов одного типа данных, доступ к которым возможен с помощью индексов.</p>
           <p class="fragment strike current-visible">Непрерывный участок памяти для хранения элементов одного типа данных, доступ к которым возможен с помощью индексов.</p>
@@ -59,311 +59,181 @@
 
         <section>
           <h3>Массив в JavaScript</h3>
-          <ul>
-            <li>
-              Объект похожий на список с некоторыми методами и свойствами
-            </li>
-            <li>
-              Ни размер, ни тип не фиксированы
-              <pre><code data-trim>
+          <p>
+            Объект похожий на список с некоторыми методами и свойствами
+          </p>
+          <p>
+            Ни размер, ни тип не фиксированы
+          </p>
+          <pre><code data-trim>
 var emptyArray = [];
 var stuff = [1, null, { well: 'hey there' }, [1, 2, 3]];
 
 var a1 = new Array();                // a1.toString() -> ''
 var a2 = new Array(3);               // a2.toString() -> ',,'
 var a3 = new Array(1, 2, 3);         // a3.toString() -> '1,2,3'
-              </code></pre>
-            </li>
-            <li>Длина массива не является верхней границей</li>
-          </ul>
-        </section>
-
-				<section>
-					<h3>Область видимости функции</h3>
-					<pre><code data-trim>
-var x = 'global';
-
-var f = function() { var x = 'inside f'; }
-var g = function(x) {}
-
-f();
-g('inside g');
-console.log(x);                               // 'global'
-
-var h = function() {
-  x = 'inside h';
-}
-
-h();
-console.log(x)                                // 'inside h'
-					</code></pre>
-        </section>
-
-        <section>
-          <h3>Variable hoisting</h3>
-
-					<pre><code data-trim>
-var x = 42;
-
-var f = function() {
-  if (x === 42) {
-    console.log(x);
-  } else {
-    var x = 50;
-    console.log(x);
-  }
-}
-
-f();
-					</code></pre>
-        </section>
-
-        <section>
-          <h3>Вложенные области видимости</h3>
-					<pre><code data-trim>
-var factorial = function(n) {
-  var factorialIter = function(i, acc) {
-    var result;
-    if (i < 2) {
-      result = acc;
-    } else {
-      result = factorialIter(i - 1, acc * i);
-    }
-    return result;
-  }
-
-  return factorialIter(n, 1);
-}
-
-factorial(4)                                  // 24
-factorialIter(6, 1);                          // error
-					</code></pre>
-        </section>
-
-				<section>
-          <h3>Блочная vs Функциональная области видимости</h3>
-          <p>В текущей версии присутствует только функциональная область видимости</p>
-					<pre><code data-trim>
-function f(a) {
-  if (a < 0) {
-    var i = 3;
-  }
-
-  console.log(i);                             // 3
-}
-
-f(-1);
-					</code></pre>
-				</section>
-
-				<section>
-          <h3>Behold the future (ECMAScript 6)</h3>
-					<pre><code data-trim>
-function f(a) {
-   if (a < 0) {
-      let i = 3;
-   }
-
-   console.log(i);           // ReferenceError: i is not defined
-}
-
-f(-1);
-					</code></pre>
-				</section>
-
-				<section>
-          <h3>Объявление функций</h3>
-					<pre><code data-trim>
-console.log('3 в квадрате: ', square(3));
-
-function square(x) {
-  return x * x;
-}
-
-function example() {
-  function a() {}                             // OK
-  if (something) {
-    function b() {}                           // bad
-  }
-}
-					</code></pre>
-				</section>
-
-				<section>
-          <h3>Стек вызовов</h3>
-					<pre><code data-trim>
-function hello(name) {
-  console.log("Hello " + name);
-}
-hello("Ivan");
-console.log("Good bye");
-					</code></pre>
-
-					<pre><code data-trim>
-top
-   hello
-        console.log
-   hello
-top
-   console.log
-top
-					</code></pre>
-				</section>
-
-				<section>
-          <h3>Переполнение стека</h3>
-					<pre><code data-trim>
-function chicken() {
-  return egg();
-}
-function egg() {
-  return chicken();
-}
-console.log(chicken() + " came first.");      // Stack overflow
-					</code></pre>
-				</section>
-
-				<section>
-          <h3>Необязательные аргументы</h3>
-					<pre><code data-trim>
-function log(text, level) {
-  if (level == undefined)
-    level = 'debug';
-
-  console.log(level + ': ', text);
-}
-
-log('called with date');              // debug: called with date
-log('called with string', 'error');   // error: called with string
-log('called with numeric', 'info');   // info: called with numeric
-					</code></pre>
-				</section>
-
-				<section>
-          <h3>Замыкания</h3>
-					<pre><code data-trim>
-var value = 1;
-
-function showValue() {
-  console.log(value);
-}
-
-value = 2;
-
-showThis();                                   // 2
-					</code></pre>
-
-					<pre><code data-trim>
-function wrapValue(n) {
-  var localVariable = n;
-  return function() { return localVariable; };
-}
-
-var wrap1 = wrapValue(1);
-var wrap2 = wrapValue(2);
-
-console.log(wrap1());                         // 1
-console.log(wrap2());                         // 2
-					</code></pre>
-				</section>
-
-				<section>
-          <h3>Еще пример</h3>
-					<pre><code data-trim>
-function multiplier(factor) {
-  return function(number) {
-    return number * factor;
-  };
-}
-
-var twice = multiplier(2);
-console.log(twice(5));                        // 10
-					</code></pre>
-				</section>
-
-				<section>
-          <h3>И еще</h3>
-					<pre><code data-trim>
-var helper = {
-  loadUser: function() { ... },
-  init: function() {
-    var _this = this;
-
-    $('.user').on('click', function() {
-      _this.loadUser();
-    }):
-  }
-}
-
-helper.init();
-					</code></pre>
-				</section>
-
-				<section>
-          <h3>Рекурсия</h3>
-					<pre><code data-trim>
-function factorial(n) {
-  if (n < 2) {
-    return 1;
-  } else {
-    return n * factorial(n - 1);
-  }
-}
-
-factorial(4);                                 // 24
-					</code></pre>
-				</section>
-
-        <section>
-					<pre><code data-trim>
-function findSolution(target) {
-  function find(start, history) {
-    if (start == target)
-      return history;
-    else if (start > target)
-      return null;
-    else
-      return find(start + 5, "(" + history + " + 5)") ||
-             find(start * 3, "(" + history + " * 3)");
-  }
-  return find(1, "1");
-}
-
-console.log(findSolution(24));
-					</code></pre>
-
-					<pre><code>
-                             "1"(1)
-
-             "1+5"(6)                    "1*3"(3)
-
- "(1+5)+5"(11)   "(1+5)*3"(21)  "(1*3)+5"(8)  "(1*3)*3"(9)
           </code></pre>
         </section>
 
         <section>
-          <h3>Стек вызовов для числа 13</h3>
-					<pre><code data-trim>
-find(1, "1")
-  find(6, "(1 + 5)")
-    find(11, "((1 + 5) + 5)")
-      find(16, "(((1 + 5) + 5) + 5)")
-        too big
-      find(33, "(((1 + 5) + 5) * 3)")
-        too big
-    find(18, "((1 + 5) * 3)")
-      too big
-  find(3, "(1 * 3)")
-    find(8, "((1 * 3) + 5)")
-      find(13, "(((1 * 3) + 5) + 5)")
-        found!
-					</code></pre>
+          <h3>Длина length</h3>
+          <pre><code data-trim>
+var a = ['a', 'b', 'c'];
+a.length                                      // 3
+
+a[0]                                          // 'a'
+a[1]                                          // 'b'
+a[2]                                          // 'c'
+a[3]                                          // undefined
+
+a[10] = 'zzz';
+a.length                                      // 11
+
+a.length = 2;
+console.log(a);                               // ['a', 'b']
+          </code></pre>
+        </section>
+
+
+        <section>
+          <h3>Двумерные массивы</h3>
+          <pre><code data-trim>
+var board = [
+  ['R','N','B','Q','K','B','N','R'],
+  ['P','P','P','P','P','P','P','P'],
+  [' ',' ',' ',' ',' ',' ',' ',' '],
+  [' ',' ',' ',' ',' ',' ',' ',' '],
+  [' ',' ',' ',' ',' ',' ',' ',' '],
+  [' ',' ',' ',' ',' ',' ',' ',' '],
+  ['p','p','p','p','p','p','p','p'],
+  ['r','n','b','q','k','b','n','r'] ];
+
+console.log(board.join('\n') + '\n\n');
+
+// Двигаем королевскую пешку вперёд на две клетки
+board[4][4] = board[6][4];
+board[6][4] = ' ';
+console.log(board.join('\n'));
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>slice, splice и delete</h3>
+
+          <pre><code data-trim>
+var a = [1, 2, 3, 4, 5, 6];
+
+delete a[1];             // true
+console.log(a);          // [1, undefined, 3, 4, 5, 6]
+
+var b = a.slice(2, 6);   // 2 - start index, 6 - end index
+console.log(b);          // [3, 4, 5, 6]
+
+b = a.splice(2, 4)       // 2 - start index, 4 - number of elements
+console.log(b)           // [3, 4, 5, 6]
+console.log(a)           // [1, undefined]
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>Добавление элементов в массив</h3>
+
+          <pre><code data-trim>
+var a = [1];
+
+a.unshift(0);                                 // a = [0, 1]
+a.push(2);                                    // a = [0, 2]
+a[a.length] = 3;                              // a = [0, 1, 2, 3]
+
+a.shift()                                     // 0; a = [1, 2, 3]
+a.pop()                                       // 3; a = [1, 2]
+a.splice(1, 1)                                // [2]; a = [1]
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>Объект</h3>
+          <p>Это контейнер со свойствами</p>
+          <p>Функция &ndash; объект, массив &ndash; объект, объект &ndash; объект</p>
+
+          <pre><code data-trim>
+var person = {
+  name: 'John Connor',
+  age: '10',
+  'birth date': new Date(1985, 02, 28),
+  father: {
+    name: 'Kyle Reese',
+    age: 21
+  }
+}
+
+person.name                                    // 'John Connor'
+person.age                                     // 10
+person['birth date']                           // Feb 28 1985
+person.father.name                             // 'Kyle Reese'
+person.father.age = 22
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>Primitive types vs Reverence types</h3>
+          <pre><code data-trim>
+var a = {}, b = {}, c = [], d = [], z = a;
+a == b                                         // false
+c == d                                         // false
+a === z                                        // true
+
+var alterProp = function(obj, prop, newValue) {
+  obj[prop] = newValue;
+}
+
+var t2Character = { name: 'Kyle Reese' }
+var spCharacter = t2Character;
+
+alterProp(spCharacter, 'name', 'Kyle Broflovski');
+
+console.log(spCharacter.name)                  // 'Kyle Broflovski'
+console.log(t2Character.name)                  // 'Kyle Broflovski'
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>Клонирование объекта</h3>
+          <pre><code data-trim>
+var extendWithPopup = function(settings) {
+  var oldCompleteHandler = settings.ajax.complete;
+  settings.ajax = _.clone(settings.ajax);
+  /* settings.ajax = Object.assign({}, settings.ajax)  // ES6 */
+
+  settings.ajax.complete = function(data) {
+    var popup = new Popup(data.status);
+    popup.render(data.message);
+    oldCompleteHandler(data);
+  };
+
+  return settings;
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>Клонирование массива</h3>
+          <pre><code data-trim>
+var a = [1, 2, 3], b = a,
+  c = a.slice(0);
+
+/* c = Array.from(a)                          // ES6 */
+
+a[2] = 4;
+console.log(b[2]);                            // 4
+console.log(c[2]);                            // 3
+          </code></pre>
         </section>
 
         <section>
           <h3>Ссылки</h3>
-          <a href="http://eloquentjavascript.net/03_functions.html">http://eloquentjavascript.net/03_functions.html</a>
-          <a href="https://leanpub.com/javascript-allonge/read#functions">https://leanpub.com/javascript-allonge/read#functions</a>
+          <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array">https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array</a>
+          <a href="http://eloquentjavascript.net/04_data.html">http://eloquentjavascript.net/04_data.html</a>
         </section>
 			</div>
 
